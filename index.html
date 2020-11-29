@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Hiragana practice</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+	<script src="bundle.js" type="module"></script>
+	<style>
+		* {
+    		box-sizing: border-box;
+		}
+		html, body {
+			margin: 0;
+			height: 100%;
+			width: 100%;
+			font-family: Roboto, sans-serif;
+		}
+		.pane-container {
+			height: 100%;
+			display: flex;
+		}
+		#options-pane {
+			width: 440px;
+			flex-grow: 0;
+			flex-shrink: 0;
+		}
+		#kana-list {
+			list-style: none;
+			display: grid;
+			padding: 0;
+			grid-gap: 10px;
+			grid-template-columns: repeat(6, 1fr);
+			grid-auto-rows: 70px;
+			grid-template-areas:
+				". な た さ か あ"
+				". に ち し き い"
+				". ぬ つ す く う"
+				". ね て せ け え"
+				". の と そ こ お"
+				". わ ら や ま は"
+				". .  り .  み ひ"
+				". .  る ゆ む ふ"
+				". .  れ .  め へ"
+				". を ろ よ も ほ";
+		}
+		#kana-list .kana {
+			font-family: "Noto Sans JP";
+			font-size: 30px;
+		}
+		#kana-list .romanji {
+			position: absolute;
+			bottom: 2px;
+			right: 2px;
+		}
+		#kana-list input {
+			display: none;
+		}
+		#kana-list label {
+			display: flex;
+			justify-content: center;
+			border: 4px solid #868686;
+			color: #333333;
+			border-radius: 12px;
+			height: 100%;
+			position: relative;
+			cursor: pointer;
+		}
+		#kana-list label.selected {
+			border: 4px solid #2d6f17;
+			color: #222222;
+			background-color: #52d327;
+		}
+		#play-area {
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			flex-grow: 1;
+			overflow: hidden;
+		}
+		.play-card {
+			height: 300px;
+			width: 200px;
+			background-color: #268bd2;
+			border-radius: 20px;
+			color: white;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			font-size: 80px;
+			font-family: "Noto Sans JP";
+			transition: background-color .2s cubic-bezier(0.4, 0.0, 0.2, 1);
+			flex-shrink: 0;
+    		flex-grow: 0;
+			margin-right: 60px;
+			transition: transform .2s cubic-bezier(0.0, 0.0, 0.2, 1), opacity .2s cubic-bezier(0.0, 0.0, 0.2, 1);
+		}
+		.play-card:first-child {
+			margin-left: 36%;
+		}
+		.play-card input {
+			font-family: inherit;
+			font-size: inherit;
+			width: 76%;
+			border-radius: 6px;
+			border: none;
+			text-align: center;
+			box-shadow: 0 0px 2px rgba(0, 0, 0, 0.4);
+			text-transform: lowercase;
+			background: white;
+		}
+		.play-card input:focus {
+			outline: none;
+			box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+		}
+		.play-card--correct {
+			background-color: #52d327;
+			opacity: .4;
+		}
+		.play-card--incorrect {
+			background-color: #d32727;
+		}
+		.play-card--disabled {
+			opacity: .8;
+		}
+	</style>
+</head>
+<body>
+</body>
+</html>
+

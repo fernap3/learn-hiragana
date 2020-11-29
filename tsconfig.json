@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"module": "es6",
+		"moduleResolution": "node",
+		"target": "esnext",
+		"strict": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"sourceMap": true
+	},
+	"exclude": [
+		"node_modules"
+	]
+}
