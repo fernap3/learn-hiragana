@@ -1,8 +1,9 @@
 import { nodeResolve } from "@rollup/plugin-node-resolve";
-import typescript from '@rollup/plugin-typescript';
+import typescript from  "@rollup/plugin-typescript";
+import copy from "rollup-plugin-copy";
 
 export default {
-	input: "main.ts",
+	input: "src/main.ts",
 	output: [
 		{
 			file: "dist/bundle.js",
@@ -14,5 +15,10 @@ export default {
 	plugins: [
 		nodeResolve(),
 		typescript(),
+		copy({
+			targets: [
+				{ src: "src/**/*", dest: "dist" },
+			],
+		}),
 	],
 };
