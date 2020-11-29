@@ -2,42 +2,45 @@ import { h, Component, render } from "preact";
 import htm from "htm";
 import { PlayCard } from "./play-card";
 import kanaMap from "./kana-map";
+import { CardList } from "./card-list";
+import { Card } from "./main";
 const html = htm.bind(h);
 
-export type GuessStatus = "correct" | "incorrect" | "indeterminate";
+export type GuessStatus = "incorrect" | "indeterminate";
 
-interface CardState
+export interface PlayAreaProps
 {
-	guessStatus: GuessStatus;
-	guess: string;
-	kana: string;
+	cards: Card[];
 }
 
-export class PlayArea extends Component<{ allowedKana: string[] }, { cards: CardState[], cardIndex: number }>
+interface PlayAreaState
 {
-	constructor(props: { allowedKana: string[] })
+	cardIndex: number;
+	guessStatus: GuessStatus;
+}
+
+export class PlayArea extends Component<PlayAreaProps, PlayAreaState>
+{
+	constructor(props: PlayAreaProps)
 	{
 		super(props);
 
-		const cards = new Array(10).fill(1).map(e => this.generateCard());
-
-		this.state = { cards, cardIndex: 0 };
+		this.state = { cardIndex: 0, guessStatus: "indeterminate" };
 	}
 
 	render()
 	{
+		if (this.props.cards.length === 0)
+			return html`<div id="play-area" class="no-kana">Select one or more kana to begin</div>`;
+		
 		return html`
 			<div id="play-area">
-			${this.state.cards.map((card, cardIndex) => html`
-				<${PlayCard}
-					key=${cardIndex}
-					kana="${card.kana}"
-					onSubmit=${(userGuess: string) => this.onGuessSubmit(userGuess)}
-					status="${card.guessStatus}"
-					disabled="${cardIndex !== this.state.cardIndex}"
-					xOffset="${-this.state.cardIndex * 260}"
-				/>
-			`)}
+			<${CardList}
+				cards=${this.props.cards}
+				cardIndex="${this.state.cardIndex}"
+				activeCardStatus=${this.state.guessStatus}
+				onGuessSubmit=${(guess: string) => this.onGuessSubmit(guess)}
+			/>
 			</div>
 		`;
 	}
@@ -46,35 +49,18 @@ export class PlayArea extends Component<{ allowedKana: string[] }, { cards: Card
 	{
 		this.setState(prevState =>
 		{
-			const card = prevState.cards[prevState.cardIndex];
+			const card = this.props.cards[prevState.cardIndex];
 			const kanaEntry = kanaMap.find(e => e.kana === card.kana);
-
-			const arrayBeforeCard = prevState.cards.slice(0, prevState.cardIndex);
-			const arrayAfterCard = prevState.cards.slice(prevState.cardIndex + 1);
-			const newCard = {...card, guessStatus: "correct"};
-			const newCards = [...arrayBeforeCard, newCard, ...arrayAfterCard, this.generateCard()] as CardState[];
 			
 			if (kanaEntry!.romanji === guess)
 			{
-				return { cards: newCards, cardIndex: prevState.cardIndex + 1 };
+				return { cardIndex: prevState.cardIndex + 1, guessStatus: "indeterminate" };
 			}
 			else
 			{
-				newCard.guessStatus = "incorrect";
-				return { cards: newCards };
+				return { guessStatus: "incorrect" };
 			}
 		});
 		
-	}
-
-	private generateCard(): CardState
-	{
-		const randomKana = this.props.allowedKana[Math.floor(Math.random() * Object.keys(this.props.allowedKana).length)];
-		
-		return {
-			guessStatus: "indeterminate",
-			kana: randomKana,
-			guess: "",
-		} as CardState;
 	}
 }

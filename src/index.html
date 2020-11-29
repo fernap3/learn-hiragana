@@ -108,6 +108,11 @@
 			flex-grow: 1;
 			overflow: hidden;
 		}
+		#play-area.no-kana {
+			justify-content: center;
+			font-weight: 200;
+    		font-size: 24px;
+		}
 		.play-card {
 			height: 300px;
 			width: 200px;
@@ -153,7 +158,20 @@
 		.play-card--incorrect {
 			background-color: #d32727;
 		}
-		
+		.bulk-select {
+			font-family: inherit;
+			background: transparent;
+			border: 1px solid #cccccc;
+			border-radius: 6px;
+			color: var(--color-text);
+			font-size: 16px;
+			padding: 0.4em 0.7em;
+			cursor: pointer;
+		}
+		.bulk-select:focus {
+			text-decoration: underline;
+			outline: none;
+		}
 	</style>
 </head>
 <body>

@@ -44,4 +44,10 @@ export default [
 	{ kana: "や", romanji: "ya" },
 	{ kana: "ゆ", romanji: "yu" },
 	{ kana: "よ", romanji: "yo" },
+	
+	{ kana: "ら", romanji: "ra" },
+	{ kana: "り", romanji: "ri" },
+	{ kana: "る", romanji: "ru" },
+	{ kana: "れ", romanji: "re" },
+	{ kana: "ろ", romanji: "ro" },
 ];

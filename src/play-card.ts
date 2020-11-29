@@ -19,7 +19,6 @@ export class PlayCard extends Component<PlayCardProps, { }>
 	constructor(props: PlayCardProps)
 	{
 		super(props);
-
 		this.state = { };
 	}
 
