@@ -33,7 +33,7 @@ export class PlayCard extends Component<PlayCardProps, { }>
 				${this.props.kana}
 				<input
 					type="text"
-					maxLength="2"
+					maxLength="3"
 					spellCheck="false"
 					disabled=${this.props.disabled}
 					onKeydown=${(evt: KeyboardEvent) => this.onKeydown(evt)}
