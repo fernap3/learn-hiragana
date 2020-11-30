@@ -50,4 +50,8 @@ export default [
 	{ kana: "る", romanji: "ru" },
 	{ kana: "れ", romanji: "re" },
 	{ kana: "ろ", romanji: "ro" },
+
+	{ kana: "わ", romanji: "wa" },
+	{ kana: "を", romanji: "wo" },
+	{ kana: "ん", romanji: "n" },
 ];

@@ -19,6 +19,8 @@ export interface Card
 
 class App extends Component<{}, AppState>
 {
+	private static readonly cardQueueLength = 10;
+	
 	constructor(props: {})
 	{
 		super(props);
@@ -30,9 +32,6 @@ class App extends Component<{}, AppState>
 		{
 			this.state = { ...this.state, selectedKana: JSON.parse(savedSelectedKanaJson) };
 		}
-
-		const cards = new Array(10).fill(1).map(e => this.generateCard());
-		this.state = { ...this.state, cards };
 	}
 
 	render()
@@ -49,7 +48,7 @@ class App extends Component<{}, AppState>
 						</li>
 						`)}
 					</ul>
-					<div>
+					<div id="kana-bulk-select-buttons">
 						<button type="button" class="bulk-select" onClick="${() => this.selectAll()}">Select all</button>
 						<button type="button" class="bulk-select" onClick="${() => this.selectNone()}">Select none</button>
 					</div>
@@ -66,7 +65,8 @@ class App extends Component<{}, AppState>
 	{
 		this.setState(prevState =>
 		{
-			return { cards: [...prevState.cards, this.generateCard() ] };
+			const allowedKana = Object.entries(prevState.selectedKana).filter(e => e[1]).map(e => e[0]);
+			return { cards: [...prevState.cards, this.generateCard(allowedKana) ] };
 		});
 	}
 
@@ -77,8 +77,8 @@ class App extends Component<{}, AppState>
 			const newSelectedKana = { ...prevState.selectedKana, [kana]: !prevState.selectedKana[kana] };
 			this.saveSelectedKanaToLocalStorage(newSelectedKana);
 
-			const filteredCards = this.state.cards.filter(c => !!newSelectedKana[c.kana]);
-			return { selectedKana: newSelectedKana, cards: filteredCards };
+			const newCards = Object.values(newSelectedKana).some(e => e === true) ? this.generateFullCardQueue(newSelectedKana) : [];
+			return { selectedKana: newSelectedKana, cards: newCards };
 		});
 	}
 
@@ -92,9 +92,10 @@ class App extends Component<{}, AppState>
 	private selectAll(): void
 	{
 		const newSelectedKana = Object.fromEntries(kanaMap.map(e => [e.kana, true]));
-		
-		this.setState({
-			selectedKana: newSelectedKana,
+
+		this.setState(prevState =>
+		{
+			return { selectedKana: newSelectedKana, cards: this.generateFullCardQueue(newSelectedKana) };
 		});
 
 		this.saveSelectedKanaToLocalStorage(newSelectedKana);
@@ -102,14 +103,24 @@ class App extends Component<{}, AppState>
 
 	private selectNone(): void
 	{
-		this.setState({ selectedKana: {} });
-
+		this.setState({ selectedKana: {}, cards: [], });
 		this.saveSelectedKanaToLocalStorage({});
 	}
 
-	private generateCard(): Card
+	private generateFullCardQueue(selectedKana: {[kana: string]: boolean}): Card[]
 	{
-		const allowedKana = Object.entries(this.state.selectedKana).filter(e => e[1]).map(e => e[0]);
+		const newCards = [];
+		const allowedKana = Object.entries(selectedKana).filter(e => e[1]).map(e => e[0]);
+
+		// Bring the card queue up to the desired size if it is not already full
+		for (let i = 0; i < App.cardQueueLength; i++)
+			newCards.push(this.generateCard(allowedKana));
+
+		return newCards;
+	}
+
+	private generateCard(allowedKana: string[]): Card
+	{
 		const randomKana = allowedKana[Math.floor(Math.random() * Object.keys(allowedKana).length)];
 		
 		return {
