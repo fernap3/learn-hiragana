@@ -11,6 +11,7 @@ export type GuessStatus = "incorrect" | "indeterminate";
 export interface PlayAreaProps
 {
 	cards: Card[];
+	afterCorrectGuess: () => void;
 }
 
 interface PlayAreaState
@@ -54,6 +55,7 @@ export class PlayArea extends Component<PlayAreaProps, PlayAreaState>
 			
 			if (kanaEntry!.romanji === guess)
 			{
+				this.props.afterCorrectGuess();
 				return { cardIndex: prevState.cardIndex + 1, guessStatus: "indeterminate" };
 			}
 			else

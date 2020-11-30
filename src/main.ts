@@ -54,9 +54,20 @@ class App extends Component<{}, AppState>
 						<button type="button" class="bulk-select" onClick="${() => this.selectNone()}">Select none</button>
 					</div>
 				</div>
-				<${PlayArea} cards=${this.state.cards} />
+				<${PlayArea}
+					cards=${this.state.cards}
+					afterCorrectGuess=${() => this.afterCorrectGuess()}
+				/>
 			</div>
 		`;
+	}
+
+	private afterCorrectGuess(): void
+	{
+		this.setState(prevState =>
+		{
+			return { cards: [...prevState.cards, this.generateCard() ] };
+		});
 	}
 
 	private onKanaSelect(kana: string): void
