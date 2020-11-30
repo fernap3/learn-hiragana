@@ -12,11 +12,11 @@ export interface PlayAreaProps
 {
 	cards: Card[];
 	afterCorrectGuess: () => void;
+	cardIndex: number;
 }
 
 interface PlayAreaState
 {
-	cardIndex: number;
 	guessStatus: GuessStatus;
 }
 
@@ -26,7 +26,7 @@ export class PlayArea extends Component<PlayAreaProps, PlayAreaState>
 	{
 		super(props);
 
-		this.state = { cardIndex: 0, guessStatus: "indeterminate" };
+		this.state = { guessStatus: "indeterminate" };
 	}
 
 	render()
@@ -38,7 +38,7 @@ export class PlayArea extends Component<PlayAreaProps, PlayAreaState>
 			<div id="play-area">
 			<${CardList}
 				cards=${this.props.cards}
-				cardIndex="${this.state.cardIndex}"
+				cardIndex="${this.props.cardIndex}"
 				activeCardStatus=${this.state.guessStatus}
 				onGuessSubmit=${(guess: string) => this.onGuessSubmit(guess)}
 			/>
@@ -50,13 +50,13 @@ export class PlayArea extends Component<PlayAreaProps, PlayAreaState>
 	{
 		this.setState(prevState =>
 		{
-			const card = this.props.cards[prevState.cardIndex];
+			const card = this.props.cards[this.props.cardIndex];
 			const kanaEntry = kanaMap.find(e => e.kana === card.kana);
 			
 			if (kanaEntry!.romanji === guess)
 			{
 				this.props.afterCorrectGuess();
-				return { cardIndex: prevState.cardIndex + 1, guessStatus: "indeterminate" };
+				return { guessStatus: "indeterminate" };
 			}
 			else
 			{

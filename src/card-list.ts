@@ -2,11 +2,12 @@ import { h, Component, render } from "preact";
 import htm from "htm";
 import { PlayCard } from "./play-card";
 import { GuessStatus } from "./play-area";
+import { Card } from "./main";
 const html = htm.bind(h);
 
 interface CardListProps
 {
-	cards: { kana: string; }[];
+	cards: Card[];
 	cardIndex: number;
 	onGuessSubmit: (userGuess: string) => void;
 	activeCardStatus: GuessStatus;
@@ -25,7 +26,7 @@ export class CardList extends Component<CardListProps, {}>
 		return html`
 			${this.props.cards.map((card, cardIndex) => html`
 				<${PlayCard}
-					key=${cardIndex}
+					key=${card.id}
 					kana="${card.kana}"
 					onSubmit=${(userGuess: string) => this.props.onGuessSubmit(userGuess)}
 					status="${cardIndex === this.props.cardIndex ? this.props.activeCardStatus : cardIndex < this.props.cardIndex ? "correct" : "indeterminate"}"
