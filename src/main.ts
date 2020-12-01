@@ -8,6 +8,7 @@ const html = htm.bind(h);
 interface AppState
 {
 	selectedKana: {[kana: string]: boolean };
+	sequenceAlgo: "random" | "shuffle";
 	cards: Card[];
 	cardIndex: number;
 }
@@ -26,7 +27,7 @@ class App extends Component<{}, AppState>
 	{
 		super(props);
 
-		this.state = { selectedKana: {}, cards: [], cardIndex: 0 };
+		this.state = { selectedKana: {}, cards: [], cardIndex: 0, sequenceAlgo: "shuffle" };
 		
 		const savedSelectedKanaJson = localStorage.getItem("selected-kana");
 		if (savedSelectedKanaJson)
@@ -57,6 +58,12 @@ class App extends Component<{}, AppState>
 					<div id="kana-bulk-select-buttons">
 						<button type="button" class="bulk-select" onClick="${() => this.selectAll()}">Select all</button>
 						<button type="button" class="bulk-select" onClick="${() => this.selectNone()}">Select none</button>
+					</div>
+					<div id="other-options">
+						<div id="other-options__sequence-algo">	
+							<label><input type="radio" name="sequence-algo" checked="${this.state.sequenceAlgo === "shuffle"}" onClick=${() => this.setState({ sequenceAlgo: "shuffle" })} />Shuffle</label>
+							<label><input type="radio" name="sequence-algo" checked="${this.state.sequenceAlgo === "random"}" onClick=${() => this.setState({ sequenceAlgo: "random" })} />Random</label>
+						</div>
 					</div>
 				</div>
 				<${PlayArea}
