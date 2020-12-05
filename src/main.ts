@@ -7,9 +7,9 @@ const html = htm.bind(h);
 
 interface AppState
 {
-	selectedKana: {[kana: string]: boolean };
+	selectedKana: string[];
 	sequenceAlgo: "random" | "shuffle";
-	cards: Card[];
+	cardQueue: Card[];
 	cardIndex: number;
 }
 
@@ -21,13 +21,13 @@ export interface Card
 
 class App extends Component<{}, AppState>
 {
-	private static readonly cardQueueLength = 10;
+	private kanaAvailableForShuffle = new Set<string>();
 	
 	constructor(props: {})
 	{
 		super(props);
 
-		this.state = { selectedKana: {}, cards: [], cardIndex: 0, sequenceAlgo: "shuffle" };
+		this.state = { selectedKana: [], cardQueue: [], cardIndex: 0, sequenceAlgo: "shuffle" };
 		
 		const savedSelectedKanaJson = localStorage.getItem("selected-kana");
 		if (savedSelectedKanaJson)
@@ -36,21 +36,23 @@ class App extends Component<{}, AppState>
 			this.state = {
 				...this.state,
 				selectedKana: savedSelectedKana,
-				cards: Object.values(savedSelectedKana).some(e => e === true) ? this.generateFullCardQueue(savedSelectedKana) : [],
+				cardQueue: savedSelectedKana.length > 0 ? this.generateNext50Cards(savedSelectedKana, this.state.sequenceAlgo) : [],
 			};
 		}
 	}
 
 	render()
 	{
+		const selectedKanaSet = new Set<string>(this.state.selectedKana);
+		
 		return html`
 			<div class="pane-container">
 				<div id="options-pane">
 					<ul id="kana-list">
 						${kanaMap.map(item => html`
 						<li style="grid-area: ${item.kana}">
-							<label class=${this.state.selectedKana[item.kana] ? "selected" : ""}>
-								<input type="checkbox" checked=${this.state.selectedKana[item.kana]} onClick="${() => this.onKanaSelect(item.kana)}" /><span class="kana">${item.kana}</span><div class="romanji">${item.romanji}</div>
+							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
+								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" /><span class="kana">${item.kana}</span><div class="romanji">${item.romanji}</div>
 							</label>
 						</li>
 						`)}
@@ -61,13 +63,13 @@ class App extends Component<{}, AppState>
 					</div>
 					<div id="other-options">
 						<div id="other-options__sequence-algo">	
-							<label><input type="radio" name="sequence-algo" checked="${this.state.sequenceAlgo === "shuffle"}" onClick=${() => this.setState({ sequenceAlgo: "shuffle" })} />Shuffle</label>
-							<label><input type="radio" name="sequence-algo" checked="${this.state.sequenceAlgo === "random"}" onClick=${() => this.setState({ sequenceAlgo: "random" })} />Random</label>
+							<label><input type="radio" name="sequence-algo" checked="${this.state.sequenceAlgo === "shuffle"}" onClick=${() => this.setSequenceAlgo("shuffle")} />Shuffle</label>
+							<label><input type="radio" name="sequence-algo" checked="${this.state.sequenceAlgo === "random"}" onClick=${() => this.setSequenceAlgo("random")} />Random</label>
 						</div>
 					</div>
 				</div>
 				<${PlayArea}
-					cards=${this.state.cards}
+					cards=${this.state.cardQueue}
 					afterCorrectGuess=${() => this.afterCorrectGuess()}
 					cardIndex=${this.state.cardIndex}
 				/>
@@ -75,12 +77,22 @@ class App extends Component<{}, AppState>
 		`;
 	}
 
+	private setSequenceAlgo(algo: "shuffle" | "random"): void
+	{
+		this.setState(prevState =>
+		{
+			const selectedKana = prevState.selectedKana;
+			const newCards = selectedKana.length > 0 ? this.generateNext50Cards(selectedKana, algo) : [];
+			return { sequenceAlgo: algo, cardQueue: newCards, cardIndex: 0 };
+		});
+	}
+
 	private afterCorrectGuess(): void
 	{
 		this.setState(prevState =>
 		{
-			const allowedKana = Object.entries(prevState.selectedKana).filter(e => e[1]).map(e => e[0]);
-			return { cards: [...prevState.cards, this.generateCard(allowedKana) ], cardIndex: prevState.cardIndex + 1 };
+			const nextCard = this.generateCard(prevState.selectedKana, prevState.sequenceAlgo);
+			return { cardQueue: [...prevState.cardQueue, nextCard ], cardIndex: prevState.cardIndex + 1 };
 		});
 	}
 
@@ -88,11 +100,11 @@ class App extends Component<{}, AppState>
 	{
 		this.setState(prevState =>
 		{
-			const newSelectedKana = { ...prevState.selectedKana, [kana]: !prevState.selectedKana[kana] };
+			const newSelectedKana = prevState.selectedKana.includes(kana) ? prevState.selectedKana.filter(e => e !== kana) : [...prevState.selectedKana, kana];
 			this.saveSelectedKanaToLocalStorage(newSelectedKana);
 
-			const newCards = Object.values(newSelectedKana).some(e => e === true) ? this.generateFullCardQueue(newSelectedKana) : [];
-			return { selectedKana: newSelectedKana, cards: newCards, cardIndex: 0 };
+			const newCards = newSelectedKana.length > 0 ? this.generateNext50Cards(newSelectedKana, prevState.sequenceAlgo) : [];
+			return { selectedKana: newSelectedKana, cardQueue: newCards, cardIndex: 0 };
 		});
 	}
 
@@ -105,11 +117,11 @@ class App extends Component<{}, AppState>
 
 	private selectAll(): void
 	{
-		const newSelectedKana = Object.fromEntries(kanaMap.map(e => [e.kana, true]));
+		const newSelectedKana = kanaMap.map(e => e.kana);
 
 		this.setState(prevState =>
 		{
-			return { selectedKana: newSelectedKana, cards: this.generateFullCardQueue(newSelectedKana), cardIndex: 0 };
+			return { selectedKana: newSelectedKana, cardQueue: this.generateNext50Cards(newSelectedKana, prevState.sequenceAlgo), cardIndex: 0 };
 		});
 
 		this.saveSelectedKanaToLocalStorage(newSelectedKana);
@@ -117,30 +129,53 @@ class App extends Component<{}, AppState>
 
 	private selectNone(): void
 	{
-		this.setState({ selectedKana: {}, cards: [], cardIndex: 0 });
-		this.saveSelectedKanaToLocalStorage({});
+		this.setState({ selectedKana: [], cardQueue: [], cardIndex: 0 });
+		this.saveSelectedKanaToLocalStorage([]);
 	}
 
-	private generateFullCardQueue(selectedKana: {[kana: string]: boolean}): Card[]
+	private generateNext50Cards(allowedKana: string[], algorithm: "random" | "shuffle"): Card[]
 	{
 		const newCards = [];
-		const allowedKana = Object.entries(selectedKana).filter(e => e[1]).map(e => e[0]);
 
 		// Bring the card queue up to the desired size if it is not already full
-		for (let i = 0; i < App.cardQueueLength; i++)
-			newCards.push(this.generateCard(allowedKana));
+		for (let i = 0; i < 50; i++)
+			newCards.push(this.generateCard(allowedKana, algorithm));
 
 		return newCards;
 	}
 
-	private generateCard(allowedKana: string[]): Card
+	private generateCard(allowedKana: string[], algorithm: "shuffle" | "random"): Card
 	{
-		const randomKana = allowedKana[Math.floor(Math.random() * Object.keys(allowedKana).length)];
+		if (algorithm === "random")
+		{
+			const randomKana = allowedKana[Math.floor(Math.random() * Object.keys(allowedKana).length)];
+			return {
+				id: guid(),
+				kana: randomKana,
+			} as Card;
+		}
+		else
+		{
+			if (this.kanaAvailableForShuffle.size === 0)
+				this.kanaAvailableForShuffle = new Set(allowedKana);
+
+			const nextKana = [...this.kanaAvailableForShuffle][Math.floor(Math.random() * this.kanaAvailableForShuffle.size)];
+			this.kanaAvailableForShuffle.delete(nextKana);
+			return {
+				id: guid(),
+				kana: nextKana,
+			} as Card;
+		}
+	}
+
+	private shuffle<T>(cards: readonly T[]): T[]
+	{
+		const shuffled = [...cards];
 		
-		return {
-			id: guid(),
-			kana: randomKana,
-		} as Card;
+		for (let i = 0; i < cards.length; i++)
+			shuffled[i] = shuffled[Math.floor(Math.random() * shuffled.length)];
+
+		return shuffled;
 	}
 }
 

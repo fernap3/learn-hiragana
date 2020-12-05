@@ -54,4 +54,34 @@ export default [
 	{ kana: "わ", romanji: "wa" },
 	{ kana: "を", romanji: "wo" },
 	{ kana: "ん", romanji: "n" },
+
+	{ kana: "が", romanji: "ga" },
+	{ kana: "ぎ", romanji: "gi" },
+	{ kana: "ぐ", romanji: "gu" },
+	{ kana: "げ", romanji: "ge" },
+	{ kana: "ご", romanji: "go" },
+
+	{ kana: "ざ", romanji: "za" },
+	{ kana: "じ", romanji: "ji" },
+	{ kana: "ず", romanji: "zu" },
+	{ kana: "ぜ", romanji: "ze" },
+	{ kana: "ぞ", romanji: "zo" },
+
+	{ kana: "だ", romanji: "da" },
+	{ kana: "ぢ", romanji: "di" },
+	{ kana: "づ", romanji: "du" },
+	{ kana: "で", romanji: "de" },
+	{ kana: "ど", romanji: "do" },
+
+	{ kana: "ば", romanji: "ba" },
+	{ kana: "び", romanji: "bi" },
+	{ kana: "ぶ", romanji: "bu" },
+	{ kana: "べ", romanji: "be" },
+	{ kana: "ぼ", romanji: "bo" },
+	
+	{ kana: "ぱ", romanji: "pa" },
+	{ kana: "ぴ", romanji: "pi" },
+	{ kana: "ぷ", romanji: "pu" },
+	{ kana: "ぺ", romanji: "pe" },
+	{ kana: "ぽ", romanji: "po" },
 ];

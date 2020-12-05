@@ -7,7 +7,7 @@
 		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noImplicitThis": true,
-		"sourceMap": true,
+		"inlineSources": true,
 	},
 	"exclude": [
 		"node_modules"
