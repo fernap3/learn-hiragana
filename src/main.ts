@@ -110,9 +110,7 @@ class App extends Component<{}, AppState>
 
 	private saveSelectedKanaToLocalStorage(selectedKana: AppState["selectedKana"]): void
 	{
-		const allKana = new Set(kanaMap.map(o => o.kana));
-		const objectToSave = Object.fromEntries(Object.entries(selectedKana).filter(e => allKana.has(e[0])));
-		localStorage.setItem("selected-kana", JSON.stringify(objectToSave));
+		localStorage.setItem("selected-kana", JSON.stringify(selectedKana));
 	}
 
 	private selectAll(): void
