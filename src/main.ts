@@ -45,8 +45,6 @@ class App extends Component<{}, AppState>
 	{
 		const selectedKanaSet = new Set<string>(this.state.selectedKana);
 
-		console.log(this.state.cardQueue)
-		
 		return html`
 			<div class="pane-container">
 				<div id="options-pane">
