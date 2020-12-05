@@ -1,4 +1,4 @@
-import { h, Component, render } from "preact";
+import { h, Component } from "preact";
 import htm from "htm";
 import { GuessStatus } from "./play-area";
 const html = htm.bind(h);

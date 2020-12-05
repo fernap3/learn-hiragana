@@ -21,7 +21,7 @@ export interface Card
 
 class App extends Component<{}, AppState>
 {
-	private kanaAvailableForShuffle = new Set<string>();
+	private kanaAvailableForShuffle = [] as string[];
 	
 	constructor(props: {})
 	{
@@ -44,6 +44,8 @@ class App extends Component<{}, AppState>
 	render()
 	{
 		const selectedKanaSet = new Set<string>(this.state.selectedKana);
+
+		console.log(this.state.cardQueue)
 		
 		return html`
 			<div class="pane-container">
@@ -103,6 +105,8 @@ class App extends Component<{}, AppState>
 			const newSelectedKana = prevState.selectedKana.includes(kana) ? prevState.selectedKana.filter(e => e !== kana) : [...prevState.selectedKana, kana];
 			this.saveSelectedKanaToLocalStorage(newSelectedKana);
 
+			this.kanaAvailableForShuffle = [];
+
 			const newCards = newSelectedKana.length > 0 ? this.generateNext50Cards(newSelectedKana, prevState.sequenceAlgo) : [];
 			return { selectedKana: newSelectedKana, cardQueue: newCards, cardIndex: 0 };
 		});
@@ -116,6 +120,7 @@ class App extends Component<{}, AppState>
 	private selectAll(): void
 	{
 		const newSelectedKana = kanaMap.map(e => e.kana);
+		this.kanaAvailableForShuffle = [];
 
 		this.setState(prevState =>
 		{
@@ -127,6 +132,7 @@ class App extends Component<{}, AppState>
 
 	private selectNone(): void
 	{
+		this.kanaAvailableForShuffle = [];
 		this.setState({ selectedKana: [], cardQueue: [], cardIndex: 0 });
 		this.saveSelectedKanaToLocalStorage([]);
 	}
@@ -154,26 +160,17 @@ class App extends Component<{}, AppState>
 		}
 		else
 		{
-			if (this.kanaAvailableForShuffle.size === 0)
-				this.kanaAvailableForShuffle = new Set(allowedKana);
+			if (this.kanaAvailableForShuffle.length === 0)
+				this.kanaAvailableForShuffle = [...allowedKana];
 
-			const nextKana = [...this.kanaAvailableForShuffle][Math.floor(Math.random() * this.kanaAvailableForShuffle.size)];
-			this.kanaAvailableForShuffle.delete(nextKana);
+			const kanaIndex = Math.floor(Math.random() * this.kanaAvailableForShuffle.length);
+			const nextKana = this.kanaAvailableForShuffle[kanaIndex];
+			this.kanaAvailableForShuffle.splice(kanaIndex, 1);
 			return {
 				id: guid(),
 				kana: nextKana,
 			} as Card;
 		}
-	}
-
-	private shuffle<T>(cards: readonly T[]): T[]
-	{
-		const shuffled = [...cards];
-		
-		for (let i = 0; i < cards.length; i++)
-			shuffled[i] = shuffled[Math.floor(Math.random() * shuffled.length)];
-
-		return shuffled;
 	}
 }
 

@@ -1,6 +1,5 @@
-import { h, Component, render } from "preact";
+import { h, Component } from "preact";
 import htm from "htm";
-import { PlayCard } from "./play-card";
 import kanaMap from "./kana-map";
 import { CardList } from "./card-list";
 import { Card } from "./main";

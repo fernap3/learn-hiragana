@@ -9,6 +9,7 @@
 		"noImplicitThis": true,
 		"inlineSourceMap": true,
 		"inlineSources": true,
+		"noUnusedLocals": true
 	},
 	"exclude": [
 		"node_modules"
