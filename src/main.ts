@@ -55,6 +55,7 @@ class App extends Component<{}, AppState>
 			${this.state.optionsMenuOpen ?
 				html`
 				<div class="menu-modal-container">
+					<button class="menu-modal-close-button"></button>
 					<${OptionsMenu}
 						onChange=${(newOptions: OptionsModel) => this.onOptionsMenuChange(newOptions)}
 						onClose=${() => this.onOptionsMenuClose()}
@@ -79,7 +80,7 @@ class App extends Component<{}, AppState>
 	{
 		if (this.state.optionsMenuOpen)
 		{
-			if (evt.target instanceof Element && evt.target.classList.contains("menu-modal-container"))
+			if (evt.target instanceof Element && (evt.target.classList.contains("menu-modal-container") || evt.target.classList.contains("menu-modal-close-button")))
 				this.onOptionsMenuClose();
 		}
 	}
