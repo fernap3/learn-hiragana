@@ -23,18 +23,23 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 		const selectedKanaSet = new Set<string>(this.props.options.selectedKana);
 		
 		return html`
-			<div id="options-pane">
-				<ul id="kana-list">
-					${kanaMap.map(item => html`
-					<li style="grid-area: ${item.kana}">
-						<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
-							<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
-							<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
-							<div class="romanji">${item.romanji}</div>
-						</label>
-					</li>
-					`)}
-				</ul>
+			<div id="options-menu">
+				<div id="hiragana-list">
+					<h1>Hiragana</h1>
+					<h1>Dakuten</h1>
+					<h1>Combo Hiragana</h1>
+					<ul id="regular-hiragana-list">
+						${kanaMap.map(item => html`
+						<li style="grid-area: ${item.kana}">
+							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
+								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
+								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
+								<div class="romanji">${item.romanji}</div>
+							</label>
+						</li>
+						`)}
+					</ul>
+				</div>
 				<div id="kana-bulk-select-buttons">
 					<button type="button" class="bulk-select" onClick="${() => this.selectAll()}">Select all</button>
 					<button type="button" class="bulk-select" onClick="${() => this.selectNone()}">Select none</button>

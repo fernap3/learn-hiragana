@@ -15,6 +15,7 @@
 			--color-text: white;
 			--color-text-inverted: #222222;
 			--color-background: #222222;
+			--color-background-translucent: rgba(34, 34, 34, .95);
 
 			color: var(--color-text);
 			background: var(--color-background);
@@ -25,6 +26,7 @@
 				--color-text: black;
 				--color-text-inverted: white;
 				--color-background: white;
+				--color-background-translucent: rgba(255, 255, 255, .95);
 			}
 		}
 		html, body {
@@ -33,17 +35,26 @@
 			width: 100%;
 			font-family: Roboto, sans-serif;
 		}
-		.pane-container {
-			height: 100%;
-			display: flex;
-		}
-		#options-pane {
+		#options-menu {
 			width: 734px;
 			flex-grow: 0;
 			flex-shrink: 0;
-			padding: 20px;
+			padding: 0 20px;
+			position: absolute;
+			background: var(--color-background-translucent);
+			overflow: auto;
+    		height: 100%;
 		}
-		#kana-list {
+		#hiragana-list h1 {
+			position: sticky;
+			top: 0;
+			text-align: center;
+			background: var(--color-background);
+			z-index: 1;
+    		margin: 0;
+			padding: 20px 0 10px 0;
+		}
+		#regular-hiragana-list {
 			list-style: none;
 			display: grid;
 			padding: 0;
@@ -70,23 +81,23 @@
 				".  .  .  .  . ぽ  ぼ ど ぞ ご"
 				;
 		}
-		#kana-list .kana {
+		#hiragana-list .kana {
 			font-family: "Noto Sans JP";
 			font-size: 30px;
 		}
-		#kana-list .kana.combo {
+		#hiragana-list .kana.combo {
 			font-family: "Noto Sans JP";
 			font-size: 22px;
 		}
-		#kana-list .romanji {
+		#hiragana-list .romanji {
 			position: absolute;
 			bottom: 2px;
 			right: 2px;
 		}
-		#kana-list input {
+		#hiragana-list input {
 			display: none;
 		}
-		#kana-list label {
+		#hiragana-list label {
 			display: flex;
 			justify-content: center;
 			border: 4px solid #868686;
@@ -98,21 +109,32 @@
 		}
 		@media (prefers-color-scheme: dark)
 		{
-			#kana-list label {
+			#hiragana-list label {
 				color: #cccccc;
 			}
 		}
-		#kana-list label.selected {
+		#hiragana-list label.selected {
 			border: 4px solid #1e4a10;
 			color: var(--color-text-inverted);
 			background-color: #52d327;
 		}
 		@media (prefers-color-scheme: light)
 		{
-			#kana-list label.selected {
+			#hiragana-list label.selected {
 				color: var(--color-text);
 				border-color: #2d6f17;
 			}
+		}
+		.menu-modal-container {
+			display: flex;
+			position: fixed;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			z-index: 999;
+			justify-content: center;
+   			backdrop-filter: blur(20px) brightness(.5) grayscale(0.5);
 		}
 		#play-area {
 			display: flex;
@@ -120,6 +142,7 @@
 			align-items: center;
 			flex-grow: 1;
 			overflow: hidden;
+			height: 100%;
 		}
 		#play-area.no-kana {
 			justify-content: center;
