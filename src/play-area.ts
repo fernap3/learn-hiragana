@@ -52,7 +52,7 @@ export class PlayArea extends Component<PlayAreaProps, PlayAreaState>
 			const card = this.props.cards[this.props.cardIndex];
 			const kanaEntry = kanaMap.find(e => e.kana === card.kana);
 			
-			if (kanaEntry!.romanji === guess)
+			if (kanaEntry!.romanji === guess.trim())
 			{
 				this.props.afterCorrectGuess();
 				return { guessStatus: "indeterminate" };

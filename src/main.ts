@@ -52,7 +52,9 @@ class App extends Component<{}, AppState>
 						${kanaMap.map(item => html`
 						<li style="grid-area: ${item.kana}">
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
-								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" /><span class="kana">${item.kana}</span><div class="romanji">${item.romanji}</div>
+								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
+								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
+								<div class="romanji">${item.romanji}</div>
 							</label>
 						</li>
 						`)}

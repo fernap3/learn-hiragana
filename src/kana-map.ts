@@ -84,4 +84,49 @@ export default [
 	{ kana: "ぷ", romanji: "pu" },
 	{ kana: "ぺ", romanji: "pe" },
 	{ kana: "ぽ", romanji: "po" },
+
+	{ kana: "きゃ", romanji: "kya" },
+	{ kana: "しゃ", romanji: "sha" },
+	{ kana: "ちゃ", romanji: "cha" },
+	{ kana: "にゃ", romanji: "nya" },
+
+	{ kana: "きゅ", romanji: "kyu" },
+	{ kana: "しゅ", romanji: "shu" },
+	{ kana: "ちゅ", romanji: "chu" },
+	{ kana: "にゅ", romanji: "nyu" },
+
+	{ kana: "きょ", romanji: "kyo" },
+	{ kana: "しょ", romanji: "sho" },
+	{ kana: "ちょ", romanji: "cho" },
+	{ kana: "にょ", romanji: "nyo" },
+
+	{ kana: "ひゃ", romanji: "hya" },
+	{ kana: "みゃ", romanji: "mya" },
+	{ kana: "りゃ", romanji: "rya" },
+	{ kana: "ぎゃ", romanji: "gya" },
+
+	{ kana: "ひゅ", romanji: "hyu" },
+	{ kana: "みゅ", romanji: "myu" },
+	{ kana: "りゅ", romanji: "ryu" },
+	{ kana: "ぎゅ", romanji: "gyu" },
+
+	{ kana: "ひょ", romanji: "hyo" },
+	{ kana: "みょ", romanji: "myo" },
+	{ kana: "りょ", romanji: "ryo" },
+	{ kana: "ぎょ", romanji: "gyo" },
+
+	{ kana: "じゃ", romanji: "jya" },
+	{ kana: "ぢゃ", romanji: "dya" },
+	{ kana: "びゃ", romanji: "bya" },
+	{ kana: "ぴゃ", romanji: "pya" },
+
+	{ kana: "じゅ", romanji: "jyu" },
+	{ kana: "ぢゅ", romanji: "dyu" },
+	{ kana: "びゅ", romanji: "byu" },
+	{ kana: "ぴゅ", romanji: "pyu" },
+
+	{ kana: "じょ", romanji: "jyo" },
+	{ kana: "ぢょ", romanji: "dyo" },
+	{ kana: "びょ", romanji: "byo" },
+	{ kana: "ぴょ", romanji: "pyo" },
 ];
