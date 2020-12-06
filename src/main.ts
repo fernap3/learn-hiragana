@@ -1,8 +1,8 @@
 import { h, Component, render } from "preact";
 import htm from "htm";
 import { PlayArea } from "./play-area";
-import kanaMap from "./kana-map";
 import { guid } from "./utils";
+import { OptionsMenu } from "./options-menu";
 const html = htm.bind(h);
 
 interface AppState
@@ -11,12 +11,19 @@ interface AppState
 	sequenceAlgo: "random" | "shuffle";
 	cardQueue: Card[];
 	cardIndex: number;
+	optionsMenuOpen: boolean;
 }
 
 export interface Card
 {
 	id: string;
 	kana: string;
+}
+
+export interface OptionsModel
+{
+	selectedKana: string[];
+	sequenceAlgo: "random" | "shuffle";
 }
 
 class App extends Component<{}, AppState>
@@ -27,7 +34,7 @@ class App extends Component<{}, AppState>
 	{
 		super(props);
 
-		this.state = { selectedKana: [], cardQueue: [], cardIndex: 0, sequenceAlgo: "shuffle" };
+		this.state = { selectedKana: [], cardQueue: [], cardIndex: 0, sequenceAlgo: "shuffle", optionsMenuOpen: false };
 		
 		const savedSelectedKanaJson = localStorage.getItem("selected-kana");
 		if (savedSelectedKanaJson)
@@ -36,40 +43,23 @@ class App extends Component<{}, AppState>
 			this.state = {
 				...this.state,
 				selectedKana: savedSelectedKana,
-				cardQueue: savedSelectedKana.length > 0 ? this.generateNext50Cards(savedSelectedKana, this.state.sequenceAlgo) : [],
+				cardQueue: savedSelectedKana.length > 0 ? this.generate50Cards(savedSelectedKana, this.state.sequenceAlgo) : [],
 			};
 		}
 	}
 
 	render()
 	{
-		const selectedKanaSet = new Set<string>(this.state.selectedKana);
-
 		return html`
 			<div class="pane-container">
-				<div id="options-pane">
-					<ul id="kana-list">
-						${kanaMap.map(item => html`
-						<li style="grid-area: ${item.kana}">
-							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
-								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
-								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
-								<div class="romanji">${item.romanji}</div>
-							</label>
-						</li>
-						`)}
-					</ul>
-					<div id="kana-bulk-select-buttons">
-						<button type="button" class="bulk-select" onClick="${() => this.selectAll()}">Select all</button>
-						<button type="button" class="bulk-select" onClick="${() => this.selectNone()}">Select none</button>
-					</div>
-					<div id="other-options">
-						<div id="other-options__sequence-algo">	
-							<label><input type="radio" name="sequence-algo" checked="${this.state.sequenceAlgo === "shuffle"}" onClick=${() => this.setSequenceAlgo("shuffle")} />Shuffle</label>
-							<label><input type="radio" name="sequence-algo" checked="${this.state.sequenceAlgo === "random"}" onClick=${() => this.setSequenceAlgo("random")} />Random</label>
-						</div>
-					</div>
-				</div>
+				<button type="button" onClick="${() => this.onOptionsMenuButtonClick()}" style="position: absolute; top: 0; left: 0;">Open options menu</button>
+				${this.state.optionsMenuOpen ?
+					html`<${OptionsMenu}
+						onChange=${(newOptions: OptionsModel) => this.onOptionsMenuChange(newOptions)}
+						onClose=${() => this.onOptionsMenuClose()}
+						options=${{ selectedKana: this.state.selectedKana, sequenceAlgo: this.state.sequenceAlgo }}
+					/>`
+					: null}
 				<${PlayArea}
 					cards=${this.state.cardQueue}
 					afterCorrectGuess=${() => this.afterCorrectGuess()}
@@ -79,13 +69,24 @@ class App extends Component<{}, AppState>
 		`;
 	}
 
-	private setSequenceAlgo(algo: "shuffle" | "random"): void
+	private onOptionsMenuButtonClick(): void
+	{
+		this.setState(prevState => ({ optionsMenuOpen: !prevState.optionsMenuOpen }));
+	}
+
+	private onOptionsMenuChange(newOptions: OptionsModel): void
+	{
+		console.log(newOptions);
+		this.setState({ selectedKana: newOptions.selectedKana, sequenceAlgo: newOptions.sequenceAlgo });
+		this.saveSelectedKanaToLocalStorage(newOptions.selectedKana);
+	}
+
+	private onOptionsMenuClose(): void
 	{
 		this.setState(prevState =>
 		{
-			const selectedKana = prevState.selectedKana;
-			const newCards = selectedKana.length > 0 ? this.generateNext50Cards(selectedKana, algo) : [];
-			return { sequenceAlgo: algo, cardQueue: newCards, cardIndex: 0 };
+			const newCards = prevState.selectedKana.length > 0 ? this.generate50Cards(prevState.selectedKana, prevState.sequenceAlgo) : [];
+			return { sequenceAlgo: prevState.sequenceAlgo, cardQueue: newCards, cardIndex: 0 };
 		});
 	}
 
@@ -98,46 +99,12 @@ class App extends Component<{}, AppState>
 		});
 	}
 
-	private onKanaSelect(kana: string): void
-	{
-		this.setState(prevState =>
-		{
-			const newSelectedKana = prevState.selectedKana.includes(kana) ? prevState.selectedKana.filter(e => e !== kana) : [...prevState.selectedKana, kana];
-			this.saveSelectedKanaToLocalStorage(newSelectedKana);
-
-			this.kanaAvailableForShuffle = [];
-
-			const newCards = newSelectedKana.length > 0 ? this.generateNext50Cards(newSelectedKana, prevState.sequenceAlgo) : [];
-			return { selectedKana: newSelectedKana, cardQueue: newCards, cardIndex: 0 };
-		});
-	}
-
 	private saveSelectedKanaToLocalStorage(selectedKana: AppState["selectedKana"]): void
 	{
 		localStorage.setItem("selected-kana", JSON.stringify(selectedKana));
 	}
 
-	private selectAll(): void
-	{
-		const newSelectedKana = kanaMap.map(e => e.kana);
-		this.kanaAvailableForShuffle = [];
-
-		this.setState(prevState =>
-		{
-			return { selectedKana: newSelectedKana, cardQueue: this.generateNext50Cards(newSelectedKana, prevState.sequenceAlgo), cardIndex: 0 };
-		});
-
-		this.saveSelectedKanaToLocalStorage(newSelectedKana);
-	}
-
-	private selectNone(): void
-	{
-		this.kanaAvailableForShuffle = [];
-		this.setState({ selectedKana: [], cardQueue: [], cardIndex: 0 });
-		this.saveSelectedKanaToLocalStorage([]);
-	}
-
-	private generateNext50Cards(allowedKana: string[], algorithm: "random" | "shuffle"): Card[]
+	private generate50Cards(allowedKana: string[], algorithm: "random" | "shuffle"): Card[]
 	{
 		const newCards = [];
 
