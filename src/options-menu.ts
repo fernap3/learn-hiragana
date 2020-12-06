@@ -23,8 +23,11 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 		const selectedKanaSet = new Set<string>(this.props.options.selectedKana);
 
 		const regularHiragana = kanaMap.filter(e => e.class === "hiragana");
-		const dakuten = kanaMap.filter(e => e.class === "dakuten");
+		const hiraganaDakuten = kanaMap.filter(e => e.class === "hiragana-dakuten");
 		const comboHiragana = kanaMap.filter(e => e.class === "combo-hiragana");
+		const regularKatakana = kanaMap.filter(e => e.class === "katakana");
+		const katakanaDakuten = kanaMap.filter(e => e.class === "katakana-dakuten");
+		const comboKatakana = kanaMap.filter(e => e.class === "combo-katakana");
 		
 		return html`
 			<div id="options-menu">
@@ -41,9 +44,9 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 						</li>
 						`)}
 					</ul>
-					<h1>Dakuten</h1>
-					<ul id="dakuten-list">
-						${dakuten.map(item => html`
+					<h1>Hiragana Dakuten</h1>
+					<ul id="hiragana-dakuten-list">
+						${hiraganaDakuten.map(item => html`
 						<li style="grid-area: ${item.kana}">
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
 								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
@@ -56,6 +59,42 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 					<h1>Combo Hiragana</h1>
 					<ul id="combo-hiragana-list">
 						${comboHiragana.map(item => html`
+						<li style="grid-area: ${item.kana}">
+							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
+								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
+								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
+								<div class="romanji">${item.romanji}</div>
+							</label>
+						</li>
+						`)}
+					</ul>
+					<h1>Katakana</h1>
+					<ul id="regular-katakana-list">
+						${regularKatakana.map(item => html`
+						<li style="grid-area: ${item.kana}">
+							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
+								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
+								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
+								<div class="romanji">${item.romanji}</div>
+							</label>
+						</li>
+						`)}
+					</ul>
+					<h1>Katakana Dakuten</h1>
+					<ul id="katakana-dakuten-list">
+						${katakanaDakuten.map(item => html`
+						<li style="grid-area: ${item.kana}">
+							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
+								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
+								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
+								<div class="romanji">${item.romanji}</div>
+							</label>
+						</li>
+						`)}
+					</ul>
+					<h1>Combo Katakana</h1>
+					<ul id="combo-katakana-list">
+						${comboKatakana.map(item => html`
 						<li style="grid-area: ${item.kana}">
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
 								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
