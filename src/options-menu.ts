@@ -39,7 +39,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
 								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
 								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
-								<div class="romanji">${item.romanji}</div>
+								<div class="romaji">${item.romaji}</div>
 							</label>
 						</li>
 						`)}
@@ -51,7 +51,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
 								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
 								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
-								<div class="romanji">${item.romanji}</div>
+								<div class="romaji">${item.romaji}</div>
 							</label>
 						</li>
 						`)}
@@ -63,7 +63,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
 								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
 								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
-								<div class="romanji">${item.romanji}</div>
+								<div class="romaji">${item.romaji}</div>
 							</label>
 						</li>
 						`)}
@@ -75,7 +75,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
 								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
 								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
-								<div class="romanji">${item.romanji}</div>
+								<div class="romaji">${item.romaji}</div>
 							</label>
 						</li>
 						`)}
@@ -87,7 +87,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
 								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
 								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
-								<div class="romanji">${item.romanji}</div>
+								<div class="romaji">${item.romaji}</div>
 							</label>
 						</li>
 						`)}
@@ -99,7 +99,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 							<label class=${selectedKanaSet.has(item.kana) ? "selected" : ""}>
 								<input type="checkbox" checked=${selectedKanaSet.has(item.kana)} onClick="${() => this.onKanaSelect(item.kana)}" />
 								<span class="kana${item.kana.length > 1 ? " combo" : ""}">${item.kana}</span>
-								<div class="romanji">${item.romanji}</div>
+								<div class="romaji">${item.romaji}</div>
 							</label>
 						</li>
 						`)}
