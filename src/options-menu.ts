@@ -1,6 +1,6 @@
 import { h, Component } from "preact";
 import htm from "htm";
-import kanaMap from "./kana-map";
+import kanaMap, { KanaClass } from "./kana-map";
 import { OptionsModel } from "./main";
 const html = htm.bind(h);
 
@@ -33,6 +33,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 			<div id="options-menu">
 				<div id="hiragana-list">
 					<h1>Hiragana</h1>
+					<button onClick=${() => this.selectAll("hiragana")}>Select all</button>
 					<ul id="regular-hiragana-list">
 						${regularHiragana.map(item => html`
 						<li style="grid-area: ${item.kana}">
@@ -45,6 +46,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 						`)}
 					</ul>
 					<h1>Hiragana Dakuten</h1>
+					<button onClick=${() => this.selectAll("hiragana-dakuten")}>Select all</button>
 					<ul id="hiragana-dakuten-list">
 						${hiraganaDakuten.map(item => html`
 						<li style="grid-area: ${item.kana}">
@@ -57,6 +59,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 						`)}
 					</ul>
 					<h1>Combo Hiragana</h1>
+					<button onClick=${() => this.selectAll("combo-hiragana")}>Select all</button>
 					<ul id="combo-hiragana-list">
 						${comboHiragana.map(item => html`
 						<li style="grid-area: ${item.kana}">
@@ -69,6 +72,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 						`)}
 					</ul>
 					<h1>Katakana</h1>
+					<button onClick=${() => this.selectAll("katakana")}>Select all</button>
 					<ul id="regular-katakana-list">
 						${regularKatakana.map(item => html`
 						<li style="grid-area: ${item.kana}">
@@ -81,6 +85,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 						`)}
 					</ul>
 					<h1>Katakana Dakuten</h1>
+					<button onClick=${() => this.selectAll("katakana-dakuten")}>Select all</button>
 					<ul id="katakana-dakuten-list">
 						${katakanaDakuten.map(item => html`
 						<li style="grid-area: ${item.kana}">
@@ -93,6 +98,7 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 						`)}
 					</ul>
 					<h1>Combo Katakana</h1>
+					<button onClick=${() => this.selectAll("combo-katakana")}>Select all</button>
 					<ul id="combo-katakana-list">
 						${comboKatakana.map(item => html`
 						<li style="grid-area: ${item.kana}">
@@ -132,10 +138,15 @@ export class OptionsMenu extends Component<OptionsMenuProps, {}>
 		this.props.onChange(newOptions);
 	}
 
-	private selectAll(): void
+	private selectAll(kanaClass?: KanaClass): void
 	{
 		const newOptions = { ...this.props.options } as OptionsModel;
-		newOptions.selectedKana = kanaMap.map(e => e.kana);
+		const newKana = kanaMap
+			.filter(e => !kanaClass || e.class === kanaClass)
+			.map(e => e.kana);
+
+		newOptions.selectedKana = [...new Set([...newOptions.selectedKana, ...newKana])];
+
 		this.props.onChange(newOptions);
 	}
 

@@ -1,6 +1,6 @@
-type KanaClass = "hiragana" | "hiragana-dakuten" | "combo-hiragana" | "katakana" | "katakana-dakuten" | "combo-katakana";
+export type KanaClass = "hiragana" | "hiragana-dakuten" | "combo-hiragana" | "katakana" | "katakana-dakuten" | "combo-katakana";
 
-interface KanaMapEntry
+export interface KanaMapEntry
 {
 	kana: string;
 	romaji: string;
@@ -267,6 +267,6 @@ export default <KanaMapEntry[]>[
 
 	{ kana: "ジョ", romaji: "jyo", class: "combo-katakana" },
 	{ kana: "ヂョ", romaji: "dyo", class: "combo-katakana" },
-	{ kana: "ビュ", romaji: "byo", class: "combo-katakana" },
+	{ kana: "ビョ", romaji: "byo", class: "combo-katakana" },
 	{ kana: "ピョ", romaji: "pyo", class: "combo-katakana" },
 ];
